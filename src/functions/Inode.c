@@ -1,6 +1,6 @@
 #include <conio.h>
-#include "../lib/JoaoFrancaInode.h"
-#include "../lib/JoaoFrancaDirectory.h"
+#include "../lib/Inode.h"
+#include "../lib/Directory.h"
 
 void generateInodes(FreeINode **freeInodes) {
     FILE *archive;

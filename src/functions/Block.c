@@ -1,4 +1,4 @@
-#include "../lib/JoaoFrancaBlock.h"
+#include "../lib/Block.h"
 
 void generateBlocks(FreeBlock **freeBlocks){
     *freeBlocks = malloc(sizeof(FreeBlock));

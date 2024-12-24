@@ -1,6 +1,6 @@
 #include <sys/stat.h>
 
-#include "../lib/JoaoFrancaDirectory.h"
+#include "../lib/Directory.h"
 
 int verifyDirectory(const char name[]) {
     struct stat st;

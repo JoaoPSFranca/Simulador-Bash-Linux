@@ -13,10 +13,26 @@ De preferência rodar também em terminal externo
 #include <string.h>
 #include <ctype.h>
 
-#include "functions/JoaoFrancaBlock.c"
-#include "functions/JoaoFrancaInode.c"
-#include "functions/JoaoFrancaDirectory.c"
-#include "functions/JoaoFrancaFile.c"
+#include "functions/bitmap.c"
+#include "functions/Block.c"
+#include "functions/Inode.c"
+#include "functions/Directory.c"
+#include "functions/File.c"
+
+void init_file_system(FileSystem *fs) {
+    fs->total_inodes = MAX_I_NODE;
+    fs->total_blocks = MAX_BLOCKS;
+
+    // init bitmap inodes
+    fs->inode_bitmap = (uint8_t *)calloc((MAX_I_NODE + 7) / 8, sizeof(uint8_t));
+    // memset(fs->inode_bitmap, 0, (MAX_I_NODE + 7) / 8);
+
+    // init bitmap blocks
+    fs->block_bitmap = (uint8_t *)calloc((MAX_BLOCKS + 7) / 8, sizeof(uint8_t));
+    // memset(fs->block_bitmap, 0, (MAX_BLOCKS + 7) / 8);
+
+    printf("Bash 0.5 [versao 4.0.0]\n\n");
+}
 
 void initFileSystem(FreeBlock **freeBlocks, FreeINode **freeInodes, Directory **root, INode **runSH) {
     *root = NULL;
@@ -44,7 +60,6 @@ void initFileSystem(FreeBlock **freeBlocks, FreeINode **freeInodes, Directory **
         *runSH = generate_script_sh(freeBlocks, freeInodes);
     // }
 
-    printf("Bash 0.5 [versao 3.5.5]\n\n");
 }
 
 void format(char comand[]){
