@@ -6,10 +6,7 @@
 #include "functions/Directory.c"
 #include "functions/File.c"
 
-void init_file_system(FileSystem *fs) {
-    fs->total_inodes = MAX_I_NODE;
-    fs->total_blocks = MAX_BLOCKS;
-
+void init_fileSystem(FileSystem *fs, Directory **root, INode **runSH) {
     // init bitmap inodes
     fs->inode_bitmap = (uint8_t *)calloc((MAX_I_NODE + 7) / 8, sizeof(uint8_t));
     // memset(fs->inode_bitmap, 0, (MAX_I_NODE + 7) / 8);
@@ -18,35 +15,15 @@ void init_file_system(FileSystem *fs) {
     fs->block_bitmap = (uint8_t *)calloc((MAX_BLOCKS + 7) / 8, sizeof(uint8_t));
     // memset(fs->block_bitmap, 0, (MAX_BLOCKS + 7) / 8);
 
+    fs->total_blocks = 0;
+    fs->total_inodes = 0;
+    fs->free_blocks = MAX_BLOCKS;
+    fs->free_inodes = MAX_I_NODE;
+
+    *root = generateRoot(fs);
+    *runSH = generate_script_sh(fs);
+
     printf("Bash 0.5 [versao 4.0.0]\n\n");
-}
-
-void initFileSystem(FreeBlock **freeBlocks, FreeINode **freeInodes, Directory **root, INode **runSH) {
-    *root = NULL;
-    // int flag = 0;
-
-    if(!verifyDirectory("src/Blocks") && !verifyDirectory("src/Resources")) {
-        // flag = 1;
-        // flag = readINodeDat(freeInodes);
-    //} else {
-        createDirectory("src/Blocks");
-        createDirectory("src/Resources");    
-    }
-
-    // if (!flag) {
-        generateBlocks(freeBlocks);
-        generateInodes(freeInodes);
-    // } 
-    // else {
-    //     // readBlockDat(freeBlocks);
-    //     // readDirectoryDat(root);
-    // }
-    
-    // if (*root == NULL) {
-        *root = generateRoot(freeInodes, freeBlocks);
-        *runSH = generate_script_sh(freeBlocks, freeInodes);
-    // }
-
 }
 
 void format(char comand[]){
@@ -122,8 +99,8 @@ int validateSHFile(char argument[]){
 }
 
 void functions(char argument[], char comand[], char path[], 
-                FreeINode **freeInodes, FreeBlock **freeBlocks, 
-                Directory **currentDirectory, Directory **root, INode **runSH) {
+                FileSystem **fs, Directory **currentDirectory, 
+                Directory **root, INode **runSH) {
     char fileName[MAX_FILENAME];
 
     if (!validateArgument(argument, comand))
@@ -267,7 +244,7 @@ void functions(char argument[], char comand[], char path[],
     }
 }
 
-void bash(FreeBlock **freeBlocks, FreeINode **freeInodes, 
+void bash(FileSystem **fs, 
         Directory **root, INode **runSH){
     char 
         comand[10] = "", 
@@ -296,14 +273,22 @@ void bash(FreeBlock **freeBlocks, FreeINode **freeInodes,
 }
 
 int main(){
-    FreeBlock *freeBlocks = malloc(sizeof(FreeBlock));
-    FreeINode *freeInodes = malloc(sizeof(FreeINode));
+    FileSystem *fs = malloc(sizeof(FileSystem));
     Directory *root = NULL;
     INode *runSH = NULL;
     
-    initFileSystem(&freeBlocks, &freeInodes, &root, &runSH);
+    init_fileSystem(fs, &root, &runSH);
+    allocate_block(fs);
+    allocate_inode(fs);
 
-    bash(&freeBlocks, &freeInodes, &root, &runSH);
+    createDirectory("src/Blocks");
+    createDirectory("src/Resources");
+    generateBlocks(&fs);
+    generateInodes(&fs);
+
+    bash(&fs, &root, &runSH);
+
+    free_file_system(fs);
 
     return 0;
 }
