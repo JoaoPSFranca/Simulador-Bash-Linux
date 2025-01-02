@@ -10,9 +10,4 @@ typedef struct sDirectoryEntry {
     char name[MAX_FILENAME];
 } DirectoryEntry;
 
-typedef struct sDirectory {
-    INode *inode;
-    DirectoryEntry entries[];
-} Directory;
-
 #endif 

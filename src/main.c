@@ -23,7 +23,7 @@ void init_fileSystem(FileSystem *fs, Directory **root, INode **runSH) {
     *root = generateRoot(fs);
     *runSH = generate_script_sh(fs);
 
-    printf("Bash 0.5 [versao 4.0.0]\n\n");
+    printf("Bash 0.5 [versao 5.1.0]\n\n");
 }
 
 void format(char comand[]){
@@ -278,11 +278,9 @@ int main(){
     INode *runSH = NULL;
     
     init_fileSystem(fs, &root, &runSH);
-    allocate_block(fs);
-    allocate_inode(fs);
 
-    createDirectory("src/Blocks");
-    createDirectory("src/Resources");
+    createDirectoryPhysic("src/Blocks");
+    createDirectoryPhysic("src/Resources");
     generateBlocks(&fs);
     generateInodes(&fs);
 
