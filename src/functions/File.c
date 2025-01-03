@@ -1,4 +1,4 @@
-#include "../lib/Directory.h"
+#include "../lib/FileSystem.h"
 
 INode *searchFile(INodeList **list, char fileName[MAX_FILENAME]) {
     int flag = 1;

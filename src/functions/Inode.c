@@ -1,6 +1,5 @@
 #include <conio.h>
-#include "../lib/Inode.h"
-#include "../lib/Directory.h"
+#include "../lib/FileSystem.h"
 
 void generateInodes(FileSystem **fs) {
     FILE *file;

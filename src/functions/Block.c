@@ -1,4 +1,4 @@
-#include "../lib/Block.h"
+#include "../lib/FileSystem.h"
 
 void generateBlocks(FileSystem **fs){
     for (unsigned int i = 0; i < MAX_BLOCKS; i++) {
@@ -68,6 +68,10 @@ int countBlockItens(Block *block) {
     return count;
 }
 
-Block *getBlock() {
-
+Block *getBlock(FileSystem **fs, int block_number) {
+    if (block_number == -1) 
+        block_number = allocate_block(*fs);
+        
+    return &((*fs)->blocks[block_number]);
 }
+

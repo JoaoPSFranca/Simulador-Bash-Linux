@@ -1,6 +1,6 @@
 #include <sys/stat.h>
 
-#include "../lib/Directory.h"
+#include "../lib/FileSystem.h"
 
 int verifyDirectory(const char name[]) {
     struct stat st;
@@ -43,11 +43,17 @@ DirectoryEntry *createDirectoryEntry(INode *inode, const char name[], char type)
     return dirEntry;
 }
 
-void addDirectory(FileSystem *fs, INode *inode, const char name[]) {
-    
-    dir->entries[0] = *(createDirectoryEntry(inode, ".", 'd'));
-    
-    if(parent != NULL && parent->inode->inode_number != inode->inode_number){
+void addDirectory(FileSystem *fs, INode *inode, INode *parent, const char name[]) {
+    DirectoryEntry entry = *(createDirectoryEntry(inode, ".", 'd'));
+
+    if(parent != NULL && inode->inode_number != parent->inode_number){
+        Block *block = getBlock(fs, parent->block_id[parent->block_count - 1]);
+
+        if (countBlockItens(block) == BLOCK_SIZE)
+            block = getBlock(fs, -1);
+        
+        
+                
         dir->entries[1] = *(createDirectoryEntry(parent->inode, "..", 'd'));
 
         parent->entries[parent->entry_count] = *(createDirectoryEntry(inode, name, 'd'));
